@@ -8,7 +8,7 @@ conn = mysql.connector.connect(
     password = "Purna040901@",  # ← your actual password
     database = "stock_dashboard"
 )
-print("✅ Connected to MySQL!")
+print(" Connected to MySQL!")
 
 # ── PULL ALL DATA FROM MYSQL ──────────────────────────────
 query = """
@@ -29,7 +29,7 @@ query = """
 """
 
 df = pd.read_sql(query, conn)
-print(f"✅ Pulled {len(df)} rows from MySQL!")
+print(f" Pulled {len(df)} rows from MySQL!")
 
 # ── PREVIEW THE DATA ──────────────────────────────────────
 print(df.head(10))
@@ -39,7 +39,8 @@ print(f"Date range: {df['trade_date'].min()} → {df['trade_date'].max()}")
 # ── EXPORT TO CSV ─────────────────────────────────────────
 csv_path = "stock_data_for_tableau.csv"
 df.to_csv(csv_path, index=False)
-print(f"\n✅ Exported successfully → {csv_path}")
+print(f"\n Exported successfully → {csv_path}")
 
 conn.close()
-print("🔒 MySQL connection closed.")
+
+print(" MySQL connection closed.")

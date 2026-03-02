@@ -10,18 +10,18 @@ conn = mysql.connector.connect(
     database = "stock_dashboard"
 )
 cursor = conn.cursor()
-print("✅ Connected to MySQL successfully!")
+print("Connected to MySQL successfully!")
 
 # ── DOWNLOAD STOCK DATA ───────────────────────────────────
 tickers = ['META', 'AAPL', 'AMZN', 'NFLX', 'GOOGL']
-print("📥 Downloading stock data from Yahoo Finance...")
+print(" Downloading stock data from Yahoo Finance...")
 df = yf.download(tickers, start='2019-01-01', end='2024-12-31')
 df = df['Close'].reset_index()
 
 df_long = df.melt(id_vars='Date', var_name='ticker', value_name='close_price')
 df_long.rename(columns={'Date': 'trade_date'}, inplace=True)
 df_long.dropna(inplace=True)
-print(f"✅ Downloaded {len(df_long)} rows of stock data!")
+print(f"Downloaded {len(df_long)} rows of stock data!")
 
 # ── CALCULATE MOVING AVERAGES ─────────────────────────────
 df_long.sort_values(['ticker', 'trade_date'], inplace=True)
@@ -39,7 +39,7 @@ df_long['daily_return'] = df_long.groupby('ticker')['close_price'] \
 # Convert all NaN to None (MySQL only accepts None as NULL)
 df_long = df_long.astype(object).where(pd.notnull(df_long), None)
 
-print("✅ Moving averages and daily returns calculated!")
+print("Moving averages and daily returns calculated!")
 
 # ── INSERT INTO MYSQL ─────────────────────────────────────
 insert_query = """
@@ -48,7 +48,7 @@ insert_query = """
     VALUES (%s, %s, %s, %s, %s, %s)
 """
 
-print("📤 Inserting data into MySQL... please wait...")
+print("Inserting data into MySQL... please wait...")
 rows_inserted = 0
 for _, row in df_long.iterrows():
 
@@ -71,8 +71,9 @@ for _, row in df_long.iterrows():
     rows_inserted += 1
 
 conn.commit()
-print(f"✅ {rows_inserted} rows inserted into MySQL successfully!")
+print(f"{rows_inserted} rows inserted into MySQL successfully!")
 
 cursor.close()
 conn.close()
-print("🔒 MySQL connection closed.")
+
+print(" MySQL connection closed.")
